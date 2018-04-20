@@ -7,7 +7,10 @@
 		<link rel="stylesheet" href="css/index.css">
 	</head>
 	<body>
-		<script id="props" data-props='{}'></script>
+		<%- preloadData %>
+		<%- JSON.stringify(preloadData) %>
+		<script id="props" data-props='<%- JSON.stringify(preloadData) %>'></script>
+		<!-- <script id="props" data-props='<%- JSON.stringify(preloadData) %>'></script> -->
 		<section id="root"><%- content %></section>
 		<script src="build/index.bundle.js"></script>
 	</body>

@@ -10,11 +10,20 @@ import { convertCustomRouteConfig, ensureReady } from './utils/ssrUtils';
 
 if (typeof window !== 'undefined') {
   ensureReady(routeConfig).then(() => {
-    const props = JSON.parse(document.getElementById('props').dataset.props); // eslint-disable-line
+    // const props = JSON.parse(document.getElementById('props').dataset.props); // eslint-disable-line
+    const props = {}; // eslint-disable-line
+    const props1 = document.getElementById('props').dataset.props; // eslint-disable-line
+    console.log('props1', props1);
+    console.log('typeof props1', typeof props1);
+    console.log('typeof props1', JSON.parse(props1));
     render(
       (
         <BrowserRouter>
-          { renderRoutes(routeConfig, props) }
+          <div>
+            <Nav />
+            <hr />
+            { renderRoutes(routeConfig, props) }
+          </div>
         </BrowserRouter>
       ),
       document.getElementById('root'), // eslint-disable-line
@@ -25,16 +34,43 @@ if (typeof window !== 'undefined') {
 
 export default function render2(location, props) {
   return ensureReady(routeConfig, location).then((components) => {
-    components.forEach((c) => {
+    // components.forEach((c) => {
+    //   if (c && c.fetchData) {
+    //     return c.fetchData()
+    //     .then((data) => {
+    //       console.log('data.length', data.length);
+    //       return (
+    //         <StaticRouter context={{ movies: data, }} location={location}>
+    //           {renderRoutes(routeConfig, {...props, movies: data, })}
+    //         </StaticRouter>
+    //       );
+    //     })
+    //   }
+    //   console.log(12123123123123);
+    // })
+    console.log('components', components);
+    return Promise.all(components.map((c) => {
       if (c && c.fetchData) {
-        console.log('c.fetchData', c.fetchData);
-        c.fetchData();
+        return c.fetchData()
+        .then(data => {
+          console.log('data.length', data.length);
+          // props.data = data;
+
+          return {
+            reactComponent: (
+              <StaticRouter context={{}} location={location}>
+              {renderRoutes(routeConfig, {...props, data})}
+              </StaticRouter>),
+            data,
+          }
+        });
       }
-    })
-    return (
-      <StaticRouter context={{}} location={location}>
-        {renderRoutes(routeConfig, props)}
-      </StaticRouter>
-    );
+      console.log(909);
+      return (
+        <StaticRouter context={{}} location={location}>
+        {renderRoutes(routeConfig, { ...props, data})}
+        </StaticRouter>
+      )
+    }))
   });
 }

@@ -34,6 +34,7 @@ const serverConfig = {
     libraryTarget: 'commonjs2',
     publicPath,
   },
+  target: 'node',
   module: {
     loaders: [{
       loader: 'babel-loader',
