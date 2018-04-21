@@ -20,16 +20,9 @@ export function generateAsyncRouteComponent({ loader, Placeholder }) {
         return Component;
       });
     }
-    //
-    static fetchData() {
-      if (this.state.Component.fetchData) {
-        return this.state.Component.fetchData;
-      }
-    }
 
-    constructor(props) {
-      super(props);
-      console.log('generateAsyncRouteComponent props', props.data.length);
+    constructor() {
+      super();
       this.updateState = this.updateState.bind(this);
       this.state = {
         Component,
@@ -74,8 +67,6 @@ export function generateAsyncRouteComponent({ loader, Placeholder }) {
  */
 export function ensureReady(routeConfig, providedLocation) {
   const matches = matchRoutes(routeConfig, providedLocation || location.pathname);
-  console.log('matches', matches);
-  // if (!matches.length) return undefined;
   return Promise.all(matches.map((match) => {
     const { component } = match.route;
     if (component && component.load) {
